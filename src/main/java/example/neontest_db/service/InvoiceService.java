@@ -47,7 +47,6 @@ public class InvoiceService {
         if (dto.status() != null) { // Было getStatus()
             invoice.setStatus(InvoiceStatus.valueOf(dto.status().toUpperCase()));
         }
-
         return toDto(invoiceRepository.save(invoice));
     }
 

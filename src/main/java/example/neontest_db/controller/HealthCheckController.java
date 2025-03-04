@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 @RestController
 public class HealthCheckController {
+
     @Autowired
     private DataSource dataSource;
 

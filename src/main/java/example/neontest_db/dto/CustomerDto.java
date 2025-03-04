@@ -1,7 +1,6 @@
 package example.neontest_db.dto;
 
 import example.neontest_db.entity.Customer;
-
 import java.util.UUID;
 
 public record CustomerDto(
