@@ -2,12 +2,13 @@ package example.neontest_db.repository;
 
 import example.neontest_db.entity.Invoice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
+public interface InvoiceRepository extends JpaRepository<Invoice, UUID>, JpaSpecificationExecutor<Invoice> {
     @Query("SELECT i FROM Invoice i JOIN FETCH i.customer ORDER BY i.date DESC LIMIT 5")
     List<Invoice> findTop5ByOrderByDateDesc();
 }
