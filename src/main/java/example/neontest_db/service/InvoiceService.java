@@ -80,4 +80,22 @@ public class InvoiceService {
                 invoice.getDate()
         );
     }
+
+
+    @Transactional(readOnly = true)
+    public double getTotalPaidInvoices() {
+        return invoiceRepository.findAll().stream()
+                .filter(invoice -> invoice.getStatus() == InvoiceStatus.PAID)
+                .mapToDouble(invoice -> invoice.getAmount() / 100.0)
+                .sum();
+    }
+
+    @Transactional(readOnly = true)
+    public double getTotalPendingInvoices() {
+        return invoiceRepository.findAll().stream()
+                .filter(invoice -> invoice.getStatus() == InvoiceStatus.PENDING)
+                .mapToDouble(invoice -> invoice.getAmount() / 100.0)
+                .sum();
+    }
+
 }
