@@ -19,9 +19,9 @@ public class Invoice {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @NotNull
-    @Column(name = "customer_id", nullable = false)
-    private UUID customerId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @NotNull
     @Column(name = "amount", nullable = false)
@@ -35,5 +35,4 @@ public class Invoice {
     @NotNull
     @Column(name = "date", nullable = false)
     private LocalDate date;
-
 }

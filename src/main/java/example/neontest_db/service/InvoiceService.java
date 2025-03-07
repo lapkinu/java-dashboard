@@ -3,8 +3,10 @@ package example.neontest_db.service;
 import example.neontest_db.dto.CreateInvoiceDto;
 import example.neontest_db.dto.InvoiceResponseDto;
 import example.neontest_db.dto.UpdateInvoiceDto;
+import example.neontest_db.entity.Customer;
 import example.neontest_db.entity.Invoice;
 import example.neontest_db.entity.InvoiceStatus;
+import example.neontest_db.repository.CustomerRepository;
 import example.neontest_db.repository.InvoiceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +22,17 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
+    private final CustomerRepository customerRepository;
 
     @Transactional
     public InvoiceResponseDto createInvoice(CreateInvoiceDto dto) {
         Invoice invoice = new Invoice();
-        invoice.setCustomerId(dto.customerId()); // Было getCustomerId()
-        invoice.setAmount((int) (dto.amount() * 100)); // Было getAmount()
-        invoice.setStatus(InvoiceStatus.valueOf(dto.status().toUpperCase())); // Было getStatus()
+        Customer customer = customerRepository.findById(dto.customerId())
+                .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+
+        invoice.setCustomer(customer);
+        invoice.setAmount((int) (dto.amount() * 100));
+        invoice.setStatus(InvoiceStatus.valueOf(dto.status().toUpperCase()));
         invoice.setDate(LocalDate.now());
 
         Invoice savedInvoice = invoiceRepository.save(invoice);
@@ -38,13 +44,15 @@ public class InvoiceService {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Invoice not found"));
 
-        if (dto.customerId() != null) { // Было getCustomerId()
-            invoice.setCustomerId(dto.customerId());
+        if (dto.customerId() != null) {
+            Customer customer = customerRepository.findById(dto.customerId())
+                    .orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+            invoice.setCustomer(customer);
         }
-        if (dto.amount() != null) { // Было getAmount()
+        if (dto.amount() != null) {
             invoice.setAmount((int) (dto.amount() * 100));
         }
-        if (dto.status() != null) { // Было getStatus()
+        if (dto.status() != null) {
             invoice.setStatus(InvoiceStatus.valueOf(dto.status().toUpperCase()));
         }
         return toDto(invoiceRepository.save(invoice));
@@ -66,8 +74,8 @@ public class InvoiceService {
     private InvoiceResponseDto toDto(Invoice invoice) {
         return new InvoiceResponseDto(
                 invoice.getId(),
-                invoice.getCustomerId(),
-                invoice.getAmount() / 100.0, // Обратная конвертация
+                invoice.getCustomer().getId(),
+                invoice.getAmount() / 100.0,
                 invoice.getStatus().name(),
                 invoice.getDate()
         );
