@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface InvoiceRepository extends JpaRepository<Invoice, UUID>, JpaSpecificationExecutor<Invoice> {
-    @Query("SELECT i FROM Invoice i JOIN FETCH i.customer ORDER BY i.date DESC LIMIT 5")
+    @Query("SELECT i FROM Invoice i JOIN FETCH i.customer ORDER BY i.date DESC LIMIT 10")
     List<Invoice> findTop5ByOrderByDateDesc();
 }
