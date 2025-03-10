@@ -16,11 +16,10 @@ import java.nio.file.Paths;
 @RequestMapping("/api/images")
 public class ImageController {
 
-    private final String imageDirectory = "src/main/resources/static/customers/"; // Путь к директории с изображениями
-
     @GetMapping("/{imageName}")
     public ResponseEntity<Resource> getImage(@PathVariable String imageName) {
         try {
+            String imageDirectory = "src/main/resources/static/customers/";
             Path file = Paths.get(imageDirectory).resolve(imageName);
             Resource resource = new UrlResource(file.toUri());
 
