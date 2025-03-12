@@ -37,8 +37,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/test").authenticated() // Закрытый эндпоинт
-                        .anyRequest().permitAll() // Добавлено здесь
+                        .requestMatchers("/api/test").authenticated()
+                        .anyRequest().permitAll() // Убрать после отладки
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
