@@ -35,14 +35,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String token;
         final String userEmail;
 
+        // Проверка эндпоинтов регистрации и выхода
+        if (request.getServletPath().equals("/auth/register") || request.getServletPath().equals("/auth/logout")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         token = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(token);
+        logger.info("Extracted token: " + token); // Добавляем логирование
 
+        userEmail = jwtService.extractUsername(token);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.authUserService.loadUserByUsername(userEmail);
             if (userDetails != null && jwtService.isTokenValid(token, userDetails)) {

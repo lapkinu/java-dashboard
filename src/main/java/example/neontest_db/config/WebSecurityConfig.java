@@ -35,8 +35,10 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/register").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/test").authenticated() // Закрытый эндпоинт
+                        .anyRequest().permitAll() // Добавлено здесь
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
