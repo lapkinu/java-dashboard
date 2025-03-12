@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class InvoicesTableService {
 
     private final InvoiceRepository invoiceRepository;
-    private static final int ITEMS_PER_PAGE = 5;
+    private static final int ITEMS_PER_PAGE = 10;
 
     @Transactional(readOnly = true)
     public List<InvoicesTableDto> getFilteredInvoices(String query, int currentPage) {
