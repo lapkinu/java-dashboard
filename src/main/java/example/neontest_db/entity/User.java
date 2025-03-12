@@ -1,30 +1,62 @@
 package example.neontest_db.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "users")
-public class User {
+@Data
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @ColumnDefault("uuid_generate_v4()")
-    @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "email", nullable = false, length = Integer.MAX_VALUE)
     private String email;
-
-    @Column(name = "password", nullable = false, length = Integer.MAX_VALUE)
     private String password;
 
+    // Добавьте поля, необходимые для UserDetails
+    private boolean accountNonExpired = true;
+    private boolean accountNonLocked = true;
+    private boolean credentialsNonExpired = true;
+    private boolean enabled = true;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Пример: возврат роли USER
+        return List.of(new SimpleGrantedAuthority("USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // Используем email как имя пользователя
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
 }
