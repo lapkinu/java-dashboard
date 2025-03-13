@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>example</groupId>
-    <artifactId>NeonTest_DB</artifactId>
+    <artifactId>java-dashboard</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>NeonTest_DB</name>
     <description>NeonTest_DB</description>
