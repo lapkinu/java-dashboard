@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>example</groupId>
-    <artifactId>java-dashboard</artifactId>
+    <artifactId>dashboard</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>NeonTest_DB</name>
-    <description>NeonTest_DB</description>
+    <name>dashboard</name>
+    <description>java-dashboard</description>
     <url/>
     <licenses>
         <license/>
