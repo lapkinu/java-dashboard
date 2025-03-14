@@ -10,20 +10,11 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
-
-    /*@Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000",
                         "https://nextjs-dashboard-git-dev-test-java-lapkinus-projects.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-    }*/
+    }
 
 }
