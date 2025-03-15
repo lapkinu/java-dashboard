@@ -36,14 +36,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody AuthRequest authRequest) {
-        logger.info("Registering user: {}", authRequest.getEmail());
+        //logger.info("Registering user: {}", authRequest.getEmail());
         userService.createUser(authRequest.getName(), authRequest.getEmail(), authRequest.getPassword());
         return ResponseEntity.ok("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser(@RequestBody AuthRequest authRequest) {
-        logger.info("Logging in user: {}", authRequest.getEmail());
+        //logger.info("Logging in user: {}", authRequest.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
@@ -57,7 +57,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logoutUser() {
-        logger.info("User logged out");
+        //logger.info("User logged out");
         return ResponseEntity.ok("Logout successful");
     }
 }
