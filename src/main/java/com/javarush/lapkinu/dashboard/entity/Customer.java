@@ -27,6 +27,9 @@ public class Customer {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
     private List<Invoice> invoices;
 }
