@@ -39,11 +39,9 @@ public class InvoicesTableService {
 
             if (query != null && !query.isEmpty()) {
                 try {
-                    // Попытка преобразовать query в число для фильтрации по amount
                     int amountQuery = Integer.parseInt(query);
                     predicates.add(criteriaBuilder.equal(root.get("amount"), amountQuery * 100)); // Умножаем на 100, так как amount хранится в центах
                 } catch (NumberFormatException e) {
-                    // Если query не является числом, продолжаем фильтрацию по остальным полям
                     predicates.add(criteriaBuilder.or(
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("customer").get("name")), "%" + query.toLowerCase() + "%"),
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("customer").get("email")), "%" + query.toLowerCase() + "%"),

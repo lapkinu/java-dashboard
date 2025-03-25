@@ -18,7 +18,6 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Пример: возврат роли USER
         return Collections.singleton(new SimpleGrantedAuthority("USER"));
     }
 

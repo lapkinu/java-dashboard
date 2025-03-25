@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String token;
         final String userEmail;
 
-        // Проверка эндпоинтов регистрации и выхода
         if (request.getServletPath().equals("/auth/register") || request.getServletPath().equals("/auth/logout")) {
             filterChain.doFilter(request, response);
             return;

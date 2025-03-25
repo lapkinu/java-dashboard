@@ -23,7 +23,6 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    // Добавьте поля, необходимые для UserDetails
     private boolean accountNonExpired = true;
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
@@ -31,7 +30,6 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Пример: возврат роли USER
         return List.of(new SimpleGrantedAuthority("USER"));
     }
 

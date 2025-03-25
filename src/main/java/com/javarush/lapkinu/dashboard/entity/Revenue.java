@@ -18,5 +18,5 @@ public class Revenue {
     private String month;
 
     @Column(name = "revenue", nullable = false)
-    private int revenue; // Изменено на int
+    private int revenue;
 }
