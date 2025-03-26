@@ -29,7 +29,6 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer",
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.LAZY)
+            orphanRemoval = true)
     private List<Invoice> invoices;
 }

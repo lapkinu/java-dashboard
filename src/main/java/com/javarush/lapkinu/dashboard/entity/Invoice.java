@@ -28,7 +28,7 @@ public class Invoice {
     private Integer amount;
 
     @Convert(converter = InvoiceStatusConverter.class)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING) // Можно удалить, если используете конвертер
     @Column(name = "status", nullable = false)
     private InvoiceStatus status;
 
