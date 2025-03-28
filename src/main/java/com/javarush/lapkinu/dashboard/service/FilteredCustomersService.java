@@ -22,13 +22,11 @@ public class FilteredCustomersService {
 
     @Transactional(readOnly = true)
     public List<CustomersTableTypeDto> getFilteredCustomers(String query) {
-        List<Customer> customers = customerRepository.findAll(getSpecification(query));
-        return customers.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+        return customerRepository.findFilteredCustomers(query);
     }
 
-    private Specification<Customer> getSpecification(String query) {
+
+    /*private Specification<Customer> getSpecification(String query) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (query != null && !query.isEmpty()) {
@@ -61,5 +59,5 @@ public class FilteredCustomersService {
                 totalPending,
                 totalPaid
         );
-    }
+    }*/
 }
