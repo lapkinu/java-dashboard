@@ -33,21 +33,21 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // Или добавьте соответствующее поле в User
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // Или добавьте соответствующее поле в User
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // Или добавьте соответствующее поле в User
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return true; // Или добавьте соответствующее поле в User
+        return true;
     }
 }

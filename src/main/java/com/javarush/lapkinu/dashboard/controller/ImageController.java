@@ -46,7 +46,7 @@ public class ImageController {
                     return new ResponseEntity<>(resource, headers, HttpStatus.OK);
                 } else {
                     return ResponseEntity.ok()
-                            .contentType(MediaType.APPLICATION_OCTET_STREAM) // Тип по умолчанию
+                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
                             .body(resource);
                 }
 

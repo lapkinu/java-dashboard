@@ -40,7 +40,7 @@ public class InvoicesTableService {
             if (query != null && !query.isEmpty()) {
                 try {
                     int amountQuery = Integer.parseInt(query);
-                    predicates.add(criteriaBuilder.equal(root.get("amount"), amountQuery * 100)); // Умножаем на 100, так как amount хранится в центах
+                    predicates.add(criteriaBuilder.equal(root.get("amount"), amountQuery * 100));
                 } catch (NumberFormatException e) {
                     predicates.add(criteriaBuilder.or(
                             criteriaBuilder.like(criteriaBuilder.lower(root.get("customer").get("name")), "%" + query.toLowerCase() + "%"),

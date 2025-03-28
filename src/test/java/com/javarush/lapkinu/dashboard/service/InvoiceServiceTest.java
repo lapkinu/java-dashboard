@@ -30,7 +30,6 @@ class InvoiceServiceTest {
         invoiceService = new InvoiceService(invoiceRepository, customerRepository);
     }
 
-    // Негативный сценарий: клиент не найден
     @Test
     void createInvoice_customerNotFound_throwsException() {
         UUID customerId = UUID.randomUUID();
@@ -41,7 +40,6 @@ class InvoiceServiceTest {
         verifyNoInteractions(invoiceRepository);
     }
 
-    // Негативный сценарий: некорректный статус
     @Test
     void createInvoice_invalidStatus_throwsException() {
         UUID customerId = UUID.randomUUID();
@@ -51,17 +49,16 @@ class InvoiceServiceTest {
         assertThrows(IllegalArgumentException.class, () -> invoiceService.createInvoice(dto));
     }
 
-    // Граничное значение: максимальная сумма
     @Test
     void createInvoice_maxAmount_success() {
         UUID customerId = UUID.randomUUID();
-        double maxAmount = Integer.MAX_VALUE / 100.0; // Максимальная сумма, учитывая int
+        double maxAmount = Integer.MAX_VALUE / 100.0;
         CreateInvoiceDto dto = new CreateInvoiceDto(customerId, maxAmount, "PENDING");
         Customer customer = new Customer();
         Invoice savedInvoice = new Invoice();
         savedInvoice.setId(UUID.randomUUID());
         savedInvoice.setCustomer(customer);
-        savedInvoice.setAmount((int) (maxAmount * 100)); // 2,147,483,600
+        savedInvoice.setAmount((int) (maxAmount * 100));
         savedInvoice.setStatus(com.javarush.lapkinu.dashboard.entity.InvoiceStatus.PENDING);
 
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
@@ -69,14 +66,12 @@ class InvoiceServiceTest {
 
         InvoiceResponseDto result = invoiceService.createInvoice(dto);
 
-        assertEquals(maxAmount, result.amount(), 0.01); // Ожидаем 21,474,836.47
+        assertEquals(maxAmount, result.amount(), 0.01);
     }
 
-    // Граничное значение: пустой список инвойсов
     @Test
     void getAllInvoices_emptyList_returnsEmpty() {
         when(invoiceRepository.findAll()).thenReturn(Collections.emptyList());
-
         assertTrue(invoiceService.getAllInvoices().isEmpty());
     }
 }

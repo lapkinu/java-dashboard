@@ -30,7 +30,7 @@ public class LatestInvoiceService {
                 invoice.getCustomer().getName(),
                 invoice.getCustomer().getImageUrl(),
                 invoice.getCustomer().getEmail(),
-                invoice.getAmount() / 100.0 // Предполагаем, что сумма хранится в центах
+                invoice.getAmount() / 100.0
         );
     }
 }

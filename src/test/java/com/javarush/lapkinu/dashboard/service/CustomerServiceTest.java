@@ -24,7 +24,6 @@ class CustomerServiceTest {
         customerService = new CustomerService(customerRepository);
     }
 
-    // Негативный сценарий: ошибка репозитория
     @Test
     void getAllCustomers_repositoryError_throwsException() {
         when(customerRepository.findAll()).thenThrow(new RuntimeException("Database error"));
@@ -32,7 +31,6 @@ class CustomerServiceTest {
         assertThrows(RuntimeException.class, () -> customerService.getAllCustomers());
     }
 
-    // Граничное значение: пустой список клиентов
     @Test
     void getAllCustomers_emptyList_returnsEmpty() {
         when(customerRepository.findAll()).thenReturn(Collections.emptyList());
@@ -42,21 +40,17 @@ class CustomerServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    // Граничное значение: клиент с максимальной длиной имени
     @Test
     void getAllCustomers_longName_success() {
         Customer customer = new Customer();
         UUID id = UUID.randomUUID();
-        String longName = "a".repeat(255); // Предполагаем максимум 255 символов
+        String longName = "a".repeat(255);
         customer.setId(id);
         customer.setName(longName);
         customer.setEmail("test@example.com");
         customer.setImageUrl("test.jpg");
-
         when(customerRepository.findAll()).thenReturn(List.of(customer));
-
         List<CustomerDto> result = customerService.getAllCustomers();
-
         assertEquals(1, result.size());
         assertEquals(longName, result.get(0).name());
     }

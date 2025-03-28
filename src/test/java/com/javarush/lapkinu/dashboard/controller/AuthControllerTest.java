@@ -31,29 +31,24 @@ class AuthControllerTest {
         authController = new AuthController(userService, jwtService, authenticationManager);
     }
 
-    // Негативный сценарий: неверные учетные данные
     @Test
     void loginUser_invalidCredentials_throwsBadCredentialsException() {
         AuthRequest request = new AuthRequest("test@example.com", "wrongpassword", null);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Invalid credentials"));
-
         assertThrows(BadCredentialsException.class, () -> authController.loginUser(request));
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verifyNoInteractions(jwtService); // Токен не должен генерироваться
+        verifyNoInteractions(jwtService);
     }
 
-    // Негативный сценарий: пустой email
     @Test
     void loginUser_emptyEmail_throwsException() {
         AuthRequest request = new AuthRequest("", "password", null);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new IllegalArgumentException("Email cannot be empty"));
-
         assertThrows(IllegalArgumentException.class, () -> authController.loginUser(request));
     }
 
-    // Граничное значение: очень длинный email
     @Test
     void loginUser_longEmail_success() {
         String longEmail = "a".repeat(200) + "@example.com"; // 200 символов + домен
@@ -65,9 +60,7 @@ class AuthControllerTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtService.generateToken(any(UserDetails.class))).thenReturn("token123");
-
         ResponseEntity<AuthResponse> response = authController.loginUser(request);
-
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("token123", response.getBody().getToken());
     }
