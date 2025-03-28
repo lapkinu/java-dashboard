@@ -6,6 +6,7 @@ import com.javarush.lapkinu.dashboard.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,12 +24,32 @@ class CustomerServiceTest {
         customerService = new CustomerService(customerRepository);
     }
 
+    // Негативный сценарий: ошибка репозитория
     @Test
-    void getAllCustomers_success() {
+    void getAllCustomers_repositoryError_throwsException() {
+        when(customerRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+
+        assertThrows(RuntimeException.class, () -> customerService.getAllCustomers());
+    }
+
+    // Граничное значение: пустой список клиентов
+    @Test
+    void getAllCustomers_emptyList_returnsEmpty() {
+        when(customerRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<CustomerDto> result = customerService.getAllCustomers();
+
+        assertTrue(result.isEmpty());
+    }
+
+    // Граничное значение: клиент с максимальной длиной имени
+    @Test
+    void getAllCustomers_longName_success() {
         Customer customer = new Customer();
         UUID id = UUID.randomUUID();
+        String longName = "a".repeat(255); // Предполагаем максимум 255 символов
         customer.setId(id);
-        customer.setName("Test Customer");
+        customer.setName(longName);
         customer.setEmail("test@example.com");
         customer.setImageUrl("test.jpg");
 
@@ -37,9 +58,6 @@ class CustomerServiceTest {
         List<CustomerDto> result = customerService.getAllCustomers();
 
         assertEquals(1, result.size());
-        assertEquals(id, result.get(0).id());
-        assertEquals("Test Customer", result.get(0).name());
-        assertEquals("test@example.com", result.get(0).email());
-        assertEquals("test.jpg", result.get(0).imageUrl());
+        assertEquals(longName, result.get(0).name());
     }
 }

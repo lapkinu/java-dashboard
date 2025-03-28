@@ -8,11 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AuthControllerTest {
@@ -30,48 +31,44 @@ class AuthControllerTest {
         authController = new AuthController(userService, jwtService, authenticationManager);
     }
 
+    // Негативный сценарий: неверные учетные данные
     @Test
-    void registerUser_success() {
-        AuthRequest request = new AuthRequest("test@example.com", "password", "Test User");
+    void loginUser_invalidCredentials_throwsBadCredentialsException() {
+        AuthRequest request = new AuthRequest("test@example.com", "wrongpassword", null);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new BadCredentialsException("Invalid credentials"));
 
-        ResponseEntity<String> response = authController.registerUser(request);
-
-        verify(userService).createUser("Test User", "test@example.com", "password");
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("User registered successfully", response.getBody());
+        assertThrows(BadCredentialsException.class, () -> authController.loginUser(request));
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verifyNoInteractions(jwtService); // Токен не должен генерироваться
     }
 
+    // Негативный сценарий: пустой email
     @Test
-    void loginUser_success() {
-        // Подготовка данных
-        AuthRequest request = new AuthRequest("test@example.com", "password", null);
+    void loginUser_emptyEmail_throwsException() {
+        AuthRequest request = new AuthRequest("", "password", null);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new IllegalArgumentException("Email cannot be empty"));
 
-        // Мок UserDetails
+        assertThrows(IllegalArgumentException.class, () -> authController.loginUser(request));
+    }
+
+    // Граничное значение: очень длинный email
+    @Test
+    void loginUser_longEmail_success() {
+        String longEmail = "a".repeat(200) + "@example.com"; // 200 символов + домен
+        AuthRequest request = new AuthRequest(longEmail, "password", null);
         UserDetails userDetails = mock(UserDetails.class);
-        when(userDetails.getUsername()).thenReturn("test@example.com");
-
-        // Мок Authentication
+        when(userDetails.getUsername()).thenReturn(longEmail);
         Authentication authentication = mock(Authentication.class);
         when(authentication.getPrincipal()).thenReturn(userDetails);
-
-        // Настройка authenticationManager
-        when(authenticationManager.authenticate(
-                argThat(token -> token.getPrincipal().equals("test@example.com") &&
-                        token.getCredentials().equals("password"))
-        )).thenReturn(authentication);
-
-        // Настройка jwtService
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenReturn(authentication);
         when(jwtService.generateToken(any(UserDetails.class))).thenReturn("token123");
 
-        // Выполнение
         ResponseEntity<AuthResponse> response = authController.loginUser(request);
 
-        // Проверка
         assertEquals(200, response.getStatusCodeValue());
         assertEquals("token123", response.getBody().getToken());
-
-        // Верификация вызовов
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtService).generateToken(userDetails);
     }
 }

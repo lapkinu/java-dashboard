@@ -1,9 +1,11 @@
 package com.javarush.lapkinu.dashboard.service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -54,8 +56,15 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        try {
+            if (isTokenExpired(token)) {
+                return false; // Сначала проверяем истечение срока
+            }
+            final String username = extractUsername(token);
+            return username.equals(userDetails.getUsername());
+        } catch (ExpiredJwtException | SignatureException e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {
