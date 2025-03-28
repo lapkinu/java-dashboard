@@ -19,10 +19,10 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${jwt.secret}")
-    private String secretKeyString;
+    String secretKeyString;
 
     @Value("${jwt.expiration}")
-    private long jwtExpiration;
+    long jwtExpiration;
 
     private Key getSignInKey() {
         byte[] keyBytes = Base64.getDecoder().decode(secretKeyString);
